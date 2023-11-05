@@ -65,7 +65,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image source={require("../assets/spo.png")} style={styles.logo} />
-      <Text style={styles.spotifyText}>SPOTIFY</Text>
+      <Text style={styles.spotifyText}>SPOTIFY </Text>
 
       <TextInput
         style={styles.input}

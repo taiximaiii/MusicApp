@@ -4,7 +4,6 @@ import TrackPlayer, {
   RepeatMode,
   Event,
 } from 'react-native-track-player';
-import { getAllTrackApi } from './service/track';
 
 export async function setupPlayer(){
   let isSetup = false;
@@ -18,24 +17,6 @@ export async function setupPlayer(){
       return isSetup;
   }
 }
-
-export async function addTracksFromApi() {
-  try {
-    const tracks = await getAllTrackApi(); 
-    const tracksToAdd = tracks.map((track, index) => ({
-      id: index.toString(),
-      url: track.mp3Url,
-      title: track.title,
-      artist: track.artist,
-    }));
-
-    await TrackPlayer.add(tracksToAdd);
-    await TrackPlayer.setRepeatMode(RepeatMode.Queue);
-  } catch (error) {
-    console.error('Error adding tracks from API:', error);
-  }
-}
-
 
 
 export async function playbackService (){
@@ -52,5 +33,14 @@ export async function playbackService (){
   TrackPlayer.addEventListener(Event.RemotePrevious, () => {
       TrackPlayer.skipToPrevious()
   })
+  await TrackPlayer.updateOptions({
+    capabilities: [
+      Capability.Play,
+      Capability.Pause,
+      Capability.SkipToNext,
+      Capability.SkipToPrevious,
+      Capability.Stop,
+    ],
+  });
   
 }

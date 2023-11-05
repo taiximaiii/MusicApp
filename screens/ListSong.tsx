@@ -126,27 +126,14 @@ const ListSongScreen = ({ navigation }) => {
     }
   };
 
-  const handleSwipeLeft = async (track: Track) => {
-    deleteTrackApi(track.id);
-    fetchData();
-  };
+  // const handleSwipeLeft = async (track: Track) => {
+  //   deleteTrackApi(track.id);
+  //   fetchData();
+  // };
 
   const renderTrack = ({ item }: { item: Track }) => {
-    const renderRightActions = () => {
-      return (
-        <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity
-            onPress={() => handleSwipeLeft(item)}
-            style={styles.deleteButton}
-          >
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    };
-
+  
     return (
-      <Swipeable renderRightActions={renderRightActions}>
         <TouchableOpacity
           style={styles.trackContainer}
           onPress={() => handleTrackPress(item)}
@@ -160,7 +147,6 @@ const ListSongScreen = ({ navigation }) => {
             <Entypo name="dots-three-vertical" size={24} color="#C0C0C0" />
           </TouchableOpacity>
         </TouchableOpacity>
-      </Swipeable>
     );
   };
 
