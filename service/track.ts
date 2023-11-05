@@ -1,5 +1,6 @@
 import axios from "axios";
 import { trackUrl } from "./api";
+import tr from "date-fns/esm/locale/tr/index.js";
 export const getAllTrackApi = async () => {
   try {
     const response = await axios.get(trackUrl.concat("/all"));
@@ -47,4 +48,16 @@ export const deleteTrackApi = async (id: string) => {
       "Content-Type": "application/json",
     },
   });
+}
+export const searchTrack =async (keyword:string) => {
+  try{
+      const searchTrackRequest = axios({
+          method: "GET",
+          url: trackUrl.concat("/search"),
+          params: {keyword},
+        });
+        return searchTrackRequest;
+  }catch (error){
+      console.error('Error fetching :', error);
+  }
 }

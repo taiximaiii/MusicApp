@@ -23,4 +23,16 @@ export const getTracksbyAlbumIdApi =async (id:Number) => {
         console.error('Error fetching :', error);
     }
 }
+export const searchAlbum =async (keyword:string) => {
+    try{
+        const searchAlbumRequest = axios({
+            method: "GET",
+            url: albumUrl.concat("/search"),
+            params: {keyword},
+          });
+          return searchAlbumRequest;
+    }catch (error){
+        console.error('Error fetching :', error);
+    }
+}
 

@@ -22,3 +22,15 @@ export const getTracksbyArtistIdApi =async (id:Number) => {
     }
     
 }
+export const searchArtist =async (keyword:string) => {
+    try{
+        const searchArtistRequest = axios({
+            method: "GET",
+            url: artistUrl.concat("/search"),
+            params: {keyword},
+          });
+          return searchArtistRequest;
+    }catch (error){
+        console.error('Error fetching :', error);
+    }
+}

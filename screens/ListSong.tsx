@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -14,14 +14,13 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Track} from '../interface/Track';
-import {deleteTrackApi, getAllTrackApi, uploadTrackApi} from '../service/track';
+import { Track } from '../interface/Track';
+import { deleteTrackApi, getAllTrackApi, uploadTrackApi } from '../service/track';
 import DocumentPicker from 'react-native-document-picker';
-import {Swipeable} from 'react-native-gesture-handler';
+import { Swipeable } from 'react-native-gesture-handler';
 
-const ListSongScreen = ({navigation}) => {
+const ListSongScreen = ({ navigation }) => {
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
   const [newTrack, setNewTrack] = useState({
@@ -44,13 +43,11 @@ const ListSongScreen = ({navigation}) => {
   const [isSortingAscending, setIsSortingAscending] = useState(true);
 
   const toggleSortingOrder = () => {
-    setIsSortingAscending(!isSortingAscending);
     const sortedData = [...tracks].sort((a, b) =>
-      isSortingAscending
-        ? b.title.localeCompare(a.title)
-        : a.title.localeCompare(b.title),
+      isSortingAscending ? b.title.localeCompare(a.title) : a.title.localeCompare(b.title)
     );
     setTracks(sortedData);
+    setIsSortingAscending(!isSortingAscending);
   };
 
   const fetchData = async () => {
@@ -63,20 +60,8 @@ const ListSongScreen = ({navigation}) => {
     fetchData();
   }, []);
 
-  const handleInputChange = (text: string) => {
-    setInput(text);
-    handleSearch(text);
-  };
-
-  const handleSearch = (text: string) => {
-    const filteredTracks = tracks.filter(item =>
-      item.title.toLowerCase().includes(text.toLowerCase()),
-    );
-    setTracks(filteredTracks);
-  };
-
   const handleTrackPress = (track: Track) => {
-    navigation.navigate('PlayScreen', {track, tracks});
+    navigation.navigate('PlayScreen', { track, tracks });
   };
 
   const pickImage = async () => {
@@ -87,7 +72,7 @@ const ListSongScreen = ({navigation}) => {
       const uri = result[0].uri;
       const name = result[0].name;
       const type = result[0].type;
-      setNewTrack({...newTrack, imageFile: {uri, name, type}});
+      setNewTrack({ ...newTrack, imageFile: { uri, name, type } });
     } catch (error) {
       if (DocumentPicker.isCancel(error)) {
         // User cancelled the picker
@@ -105,7 +90,7 @@ const ListSongScreen = ({navigation}) => {
       const uri = result[0].uri;
       const name = result[0].name;
       const type = result[0].type;
-      setNewTrack({...newTrack, mp3File: {uri, name, type}});
+      setNewTrack({ ...newTrack, mp3File: { uri, name, type } });
     } catch (error) {
       if (DocumentPicker.isCancel(error)) {
         // User cancelled the picker
@@ -116,12 +101,7 @@ const ListSongScreen = ({navigation}) => {
   };
 
   const handleNewTrack = async () => {
-    if (
-      !newTrack.title ||
-      !newTrack.artist ||
-      !newTrack.imageFile ||
-      !newTrack.mp3File
-    ) {
+    if (!newTrack.title || !newTrack.artist || !newTrack.imageFile || !newTrack.mp3File) {
       console.log('Please fill in all required information.');
       return;
     }
@@ -135,8 +115,8 @@ const ListSongScreen = ({navigation}) => {
         title: '',
         artist: '',
         genre: '',
-        imageFile: {uri: '', name: '', type: ''},
-        mp3File: {uri: '', name: '', type: ''},
+        imageFile: { uri: '', name: '', type: '' },
+        mp3File: { uri: '', name: '', type: '' },
       });
       fetchData();
     } catch (error) {
@@ -151,13 +131,14 @@ const ListSongScreen = ({navigation}) => {
     fetchData();
   };
 
-  const renderTrack = ({item}: {item: Track}) => {
+  const renderTrack = ({ item }: { item: Track }) => {
     const renderRightActions = () => {
       return (
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity
             onPress={() => handleSwipeLeft(item)}
-            style={styles.deleteButton}>
+            style={styles.deleteButton}
+          >
             <Text style={styles.deleteButtonText}>Delete</Text>
           </TouchableOpacity>
         </View>
@@ -168,8 +149,9 @@ const ListSongScreen = ({navigation}) => {
       <Swipeable renderRightActions={renderRightActions}>
         <TouchableOpacity
           style={styles.trackContainer}
-          onPress={() => handleTrackPress(item)}>
-          <Image style={styles.trackImage} source={{uri: item.imageUrl}} />
+          onPress={() => handleTrackPress(item)}
+        >
+          <Image style={styles.trackImage} source={{ uri: item.imageUrl }} />
           <View style={styles.trackInfo}>
             <Text style={styles.trackName}>{item.title}</Text>
             <Text style={styles.artistName}>{item.artist}</Text>
@@ -186,27 +168,13 @@ const ListSongScreen = ({navigation}) => {
     <LinearGradient colors={['#131313', '#121212']} style={styles.container}>
       <TouchableOpacity
         style={styles.customBackButton}
-        onPress={() => navigation.goBack()}>
+        onPress={() => navigation.goBack()}
+      >
         <AntDesign name="arrowleft" size={24} color="white" />
       </TouchableOpacity>
 
-      <View style={styles.header}>
-        <View style={styles.searchBar}>
-          <Pressable style={styles.searchIconContainer}>
-            <AntDesign name="search1" size={20} color="white" />
-            <TextInput
-              value={input}
-              onChangeText={text => handleInputChange(text)}
-              placeholder="Find in All songs"
-              placeholderTextColor={'white'}
-              style={{fontWeight: '500', color: 'white'}}
-            />
-          </Pressable>
-        </View>
-      </View>
-
       <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>All Songs</Text>
+        <Text style={styles.titleText}>All Tracks</Text>
       </View>
 
       <View style={styles.controls}>
@@ -217,11 +185,11 @@ const ListSongScreen = ({navigation}) => {
             color="white"
           />
         </Pressable>
-
         <View style={styles.playControls}>
           <Pressable
             style={styles.playButton}
-            onPress={() => setModalVisible(true)}>
+            onPress={() => setModalVisible(true)}
+          >
             <Entypo name="plus" size={24} color="white" />
           </Pressable>
         </View>
@@ -231,7 +199,7 @@ const ListSongScreen = ({navigation}) => {
         <FlatList
           data={tracks}
           renderItem={renderTrack}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item) => item.id.toString()}
           ListFooterComponent={
             isLoading ? <ActivityIndicator size="large" color="gray" /> : null
           }
@@ -244,7 +212,8 @@ const ListSongScreen = ({navigation}) => {
         animationType="slide"
         onRequestClose={() => {
           setModalVisible(!isModalVisible);
-        }}>
+        }}
+      >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Upload New Track</Text>
@@ -252,19 +221,19 @@ const ListSongScreen = ({navigation}) => {
               style={styles.modalInput}
               placeholder="Title"
               value={newTrack.title}
-              onChangeText={text => setNewTrack({...newTrack, title: text})}
+              onChangeText={(text) => setNewTrack({ ...newTrack, title: text })}
             />
             <TextInput
               style={styles.modalInput}
               placeholder="Artist"
               value={newTrack.artist}
-              onChangeText={text => setNewTrack({...newTrack, artist: text})}
+              onChangeText={(text) => setNewTrack({ ...newTrack, artist: text })}
             />
             <TextInput
               style={styles.modalInput}
               placeholder="Genre"
               value={newTrack.genre}
-              onChangeText={text => setNewTrack({...newTrack, genre: text})}
+              onChangeText={(text) => setNewTrack({ ...newTrack, genre: text })}
             />
             <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
               <Text style={styles.uploadButtonText}>Upload Image</Text>
@@ -284,7 +253,8 @@ const ListSongScreen = ({navigation}) => {
             )}
             <TouchableOpacity
               style={styles.modalButton}
-              onPress={handleNewTrack}>
+              onPress={handleNewTrack}
+            >
               {isUploading ? (
                 <ActivityIndicator size="small" color="#ffffff" />
               ) : (
@@ -293,7 +263,8 @@ const ListSongScreen = ({navigation}) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.modalButton}
-              onPress={() => setModalVisible(false)}>
+              onPress={() => setModalVisible(false)}
+            >
               <Text style={styles.modalButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
@@ -307,26 +278,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    marginTop: 10,
-    padding: 10,
-  },
-  searchBar: {
-    marginHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 9,
-  },
-  searchIconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 17,
-    backgroundColor: '#333',
-    padding: 6,
-    flex: 1,
-    borderRadius: 30,
-    height: 50,
+  customBackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginTop: 20,
   },
   titleContainer: {
     marginHorizontal: 20,
@@ -457,12 +413,6 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: 'white',
-  },
-  customBackButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    marginTop: 20,
   },
 });
 

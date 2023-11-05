@@ -145,7 +145,7 @@ const HomeScreen = ({ navigation }) => {
             </LinearGradient>
 
             <Text style={{ color: "white", fontSize: 13, fontWeight: "bold" }}>
-              All Songs
+              All Tracks
             </Text>
           </Pressable>
         </View>
@@ -162,7 +162,7 @@ const HomeScreen = ({ navigation }) => {
         />
 
         <View style={styles.Recently}>
-          <Text style={styles.namelist}>Top Song</Text>
+          <Text style={styles.namelist}>Top Track</Text>
         </View>
         <FlatList
           data={tracks}

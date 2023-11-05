@@ -7,9 +7,11 @@ import {
   Image,
   Pressable,
   ActivityIndicator,
+  TouchableOpacity
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient"; 
 import Entypo from "react-native-vector-icons/Entypo";
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getTrackinPlaylistApi } from "../service/playlist";
 import { Track } from "../interface/Track";
 
@@ -58,6 +60,11 @@ const ListSongPlaylist = ({ route, navigation }) => {
   return (
     <LinearGradient colors={["#232323", "#121212"]} style={styles.container}>
       <View style={styles.header}>
+      <TouchableOpacity
+        style={styles.customBackButton}
+        onPress={() => navigation.goBack()}>
+        <AntDesign name="arrowleft" size={24} color="white" />
+      </TouchableOpacity>
        
       </View>
 
@@ -159,6 +166,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 20,
     marginLeft: 20,
+  },
+  customBackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginBottom: 10,
   },
 });
 
