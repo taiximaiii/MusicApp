@@ -65,7 +65,6 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image source={require("../assets/spo.png")} style={styles.logo} />
-      <Text style={styles.spotifyText}>SPOTIFY </Text>
 
       <TextInput
         style={styles.input}
@@ -116,14 +115,16 @@ const styles = StyleSheet.create({
   logo: {
     width: 150,
     height: 150,
-    marginBottom: 20,
+    marginBottom: 40,
   },
   spotifyText: {
     fontSize: 40,
-    fontWeight: "700",
-    color: "#ffffff",
-    marginBottom: 30,
-    fontStyle: "italic",
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: 20,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    alignItems: 'center', 
   },
   input: {
     width: "100%",
