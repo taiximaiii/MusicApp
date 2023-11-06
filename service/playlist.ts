@@ -40,3 +40,22 @@ export const createNewPlaylistApi = ({ name, description }: Playlist) => {
         console.error('Error fetching:', error);
       }
 }
+export const addTrackToPlaylist =async (playListId:number,trackId:number) => {
+  try{
+    const response = await axios.post(playlistUrl+ `/${playListId}/addTrack/${trackId}`);
+    
+        return response;
+    }catch (error) {
+        throw error;
+      }
+}
+
+export const removeTrackToPlaylist =async (playListId:number,trackId:number) => {
+  try{
+    const response = await axios.post(playlistUrl+ `/${playListId}/removeTrack/${trackId}`);
+    
+        return response;
+    }catch (error) {
+        throw error;
+      }
+}

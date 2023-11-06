@@ -14,30 +14,46 @@ import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getTrackinPlaylistApi } from "../service/playlist";
 import { Track } from "../interface/Track";
+import DeleteFromPlaylistModal from "../components/DeleteFromPlaylistModal";
 
 
 const ListSongPlaylist = ({ route, navigation }) => {
   const [tracks, setTracks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // State for DeleteFromPlaylistModal
   const { playlist } = route.params;
+  const [trackToDelete, setTrackToDelete] = useState(null); // Track to delete
 
+  const fetchData = async () => {
+    try {
+      const data = await getTrackinPlaylistApi(playlist.id); 
+      setTracks(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching playlist tracks:", error);
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getTrackinPlaylistApi(playlist.id); 
-        setTracks(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching playlist tracks:", error);
-        setIsLoading(false);
-      }
-    };
+  
 
     fetchData();
   }, [playlist]);
 
-  const handleTrackPress = (track:Track) => {
-    navigation.navigate("PlayScreen", { track });
+  const handleTrackPress = (track: Track) => {
+    navigation.navigate("PlayScreen", { track,tracks });
+  };
+
+  // Function to open DeleteFromPlaylistModal
+  const openDeleteModal = (track: Track) => {
+    setTrackToDelete(track);
+    setIsDeleteModalVisible(true);
+  };
+
+  // Function to close DeleteFromPlaylistModal
+  const closeDeleteModal = () => {
+    setIsDeleteModalVisible(false);
+    setTrackToDelete(null);
   };
 
   const renderTrack = ({ item }: { item: Track }) => {
@@ -50,9 +66,9 @@ const ListSongPlaylist = ({ route, navigation }) => {
         <View style={styles.trackInfo}>
           <Text style={styles.trackName}>{item.title}</Text>
         </View>
-        <View style={styles.iconContainer}>
+        <TouchableOpacity style={styles.iconContainer} onPress={() => openDeleteModal(item)}> 
           <Entypo name="dots-three-vertical" size={24} color="#C0C0C0" />
-        </View>
+        </TouchableOpacity>
       </Pressable>
     );
   };
@@ -60,12 +76,11 @@ const ListSongPlaylist = ({ route, navigation }) => {
   return (
     <LinearGradient colors={["#232323", "#121212"]} style={styles.container}>
       <View style={styles.header}>
-      <TouchableOpacity
-        style={styles.customBackButton}
-        onPress={() => navigation.goBack()}>
-        <AntDesign name="arrowleft" size={24} color="white" />
-      </TouchableOpacity>
-       
+        <TouchableOpacity
+          style={styles.customBackButton}
+          onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={24} color="white" />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.playlistInfo}>
@@ -88,6 +103,16 @@ const ListSongPlaylist = ({ route, navigation }) => {
           }
         />
       </View>
+
+      <DeleteFromPlaylistModal
+        isDeleteFromPlaylistModalVisible={isDeleteModalVisible}
+        hideDeleteFromPlaylistModal={closeDeleteModal}
+        track={trackToDelete}
+        playlistId={playlist.id}
+        onDeleteFromPlaylistSuccess={() => {
+          fetchData();
+        }}
+      />
     </LinearGradient>
   );
 };

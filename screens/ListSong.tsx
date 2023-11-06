@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -14,15 +14,16 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { Track } from '../interface/Track';
-import { deleteTrackApi, getAllTrackApi, uploadTrackApi } from '../service/track';
+import {Track} from '../interface/Track';
+import {getAllTrackApi, uploadTrackApi} from '../service/track';
 import DocumentPicker from 'react-native-document-picker';
-import { Swipeable } from 'react-native-gesture-handler';
+import UploadModal from '../components/UploadModal';
+import MoreOptionsModal from '../components/MoreOptionsModal'; // Import modal for more options
 
-const ListSongScreen = ({ navigation }) => {
+const ListSongScreen = ({navigation}) => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isUploadModalVisible, setUploadModalVisible] = useState(false);
   const [newTrack, setNewTrack] = useState({
     title: '',
     artist: '',
@@ -44,15 +45,22 @@ const ListSongScreen = ({ navigation }) => {
 
   const toggleSortingOrder = () => {
     const sortedData = [...tracks].sort((a, b) =>
-      isSortingAscending ? b.title.localeCompare(a.title) : a.title.localeCompare(b.title)
+      isSortingAscending
+        ? b.title.localeCompare(a.title)
+        : a.title.localeCompare(b.title),
     );
     setTracks(sortedData);
     setIsSortingAscending(!isSortingAscending);
   };
 
+  const [isMoreOptionsModalVisible, setMoreOptionsModalVisible] =
+    useState(false);
+  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
+
   const fetchData = async () => {
     const data = await getAllTrackApi();
-    setTracks(data);
+    const sortedData = [...data].sort((a, b) => a.title.localeCompare(b.title));
+    setTracks(sortedData);
     setIsLoading(false);
   };
 
@@ -61,7 +69,7 @@ const ListSongScreen = ({ navigation }) => {
   }, []);
 
   const handleTrackPress = (track: Track) => {
-    navigation.navigate('PlayScreen', { track, tracks });
+    navigation.navigate('PlayScreen', {track, tracks});
   };
 
   const pickImage = async () => {
@@ -72,7 +80,7 @@ const ListSongScreen = ({ navigation }) => {
       const uri = result[0].uri;
       const name = result[0].name;
       const type = result[0].type;
-      setNewTrack({ ...newTrack, imageFile: { uri, name, type } });
+      setNewTrack({...newTrack, imageFile: {uri, name, type}});
     } catch (error) {
       if (DocumentPicker.isCancel(error)) {
         // User cancelled the picker
@@ -90,7 +98,7 @@ const ListSongScreen = ({ navigation }) => {
       const uri = result[0].uri;
       const name = result[0].name;
       const type = result[0].type;
-      setNewTrack({ ...newTrack, mp3File: { uri, name, type } });
+      setNewTrack({...newTrack, mp3File: {uri, name, type}});
     } catch (error) {
       if (DocumentPicker.isCancel(error)) {
         // User cancelled the picker
@@ -101,7 +109,12 @@ const ListSongScreen = ({ navigation }) => {
   };
 
   const handleNewTrack = async () => {
-    if (!newTrack.title || !newTrack.artist || !newTrack.imageFile || !newTrack.mp3File) {
+    if (
+      !newTrack.title ||
+      !newTrack.artist ||
+      !newTrack.imageFile ||
+      !newTrack.mp3File
+    ) {
       console.log('Please fill in all required information.');
       return;
     }
@@ -110,13 +123,13 @@ const ListSongScreen = ({ navigation }) => {
 
     try {
       await uploadTrackApi(newTrack);
-      setModalVisible(false);
+      setUploadModalVisible(false);
       setNewTrack({
         title: '',
         artist: '',
         genre: '',
-        imageFile: { uri: '', name: '', type: '' },
-        mp3File: { uri: '', name: '', type: '' },
+        imageFile: {uri: '', name: '', type: ''},
+        mp3File: {uri: '', name: '', type: ''},
       });
       fetchData();
     } catch (error) {
@@ -126,27 +139,31 @@ const ListSongScreen = ({ navigation }) => {
     }
   };
 
-  // const handleSwipeLeft = async (track: Track) => {
-  //   deleteTrackApi(track.id);
-  //   fetchData();
-  // };
+  const openMoreOptions = (track: Track) => {
+    setSelectedTrack(track);
+    setMoreOptionsModalVisible(true);
+  };
+  const handleDeleteSuccess = () => {
+    fetchData();
+  };
 
-  const renderTrack = ({ item }: { item: Track }) => {
-  
+  const renderTrack = ({item}: {item: Track}) => {
     return (
+      <TouchableOpacity
+        style={styles.trackContainer}
+        onPress={() => handleTrackPress(item)}>
+        <Image style={styles.trackImage} source={{uri: item.imageUrl}} />
+        <View style={styles.trackInfo}>
+          <Text style={styles.trackName}>{item.title}</Text>
+          <Text style={styles.artistName}>{item.artist}</Text>
+        </View>
         <TouchableOpacity
-          style={styles.trackContainer}
-          onPress={() => handleTrackPress(item)}
+          style={styles.iconContainer}
+          onPress={() => openMoreOptions(item)} // Open more options modal
         >
-          <Image style={styles.trackImage} source={{ uri: item.imageUrl }} />
-          <View style={styles.trackInfo}>
-            <Text style={styles.trackName}>{item.title}</Text>
-            <Text style={styles.artistName}>{item.artist}</Text>
-          </View>
-          <TouchableOpacity style={styles.iconContainer}>
-            <Entypo name="dots-three-vertical" size={24} color="#C0C0C0" />
-          </TouchableOpacity>
+          <Entypo name="dots-three-vertical" size={24} color="#C0C0C0" />
         </TouchableOpacity>
+      </TouchableOpacity>
     );
   };
 
@@ -154,8 +171,7 @@ const ListSongScreen = ({ navigation }) => {
     <LinearGradient colors={['#131313', '#121212']} style={styles.container}>
       <TouchableOpacity
         style={styles.customBackButton}
-        onPress={() => navigation.goBack()}
-      >
+        onPress={() => navigation.goBack()}>
         <AntDesign name="arrowleft" size={24} color="white" />
       </TouchableOpacity>
 
@@ -174,8 +190,7 @@ const ListSongScreen = ({ navigation }) => {
         <View style={styles.playControls}>
           <Pressable
             style={styles.playButton}
-            onPress={() => setModalVisible(true)}
-          >
+            onPress={() => setUploadModalVisible(true)}>
             <Entypo name="plus" size={24} color="white" />
           </Pressable>
         </View>
@@ -185,77 +200,29 @@ const ListSongScreen = ({ navigation }) => {
         <FlatList
           data={tracks}
           renderItem={renderTrack}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           ListFooterComponent={
             isLoading ? <ActivityIndicator size="large" color="gray" /> : null
           }
         />
       </View>
 
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => {
-          setModalVisible(!isModalVisible);
-        }}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Upload New Track</Text>
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Title"
-              value={newTrack.title}
-              onChangeText={(text) => setNewTrack({ ...newTrack, title: text })}
-            />
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Artist"
-              value={newTrack.artist}
-              onChangeText={(text) => setNewTrack({ ...newTrack, artist: text })}
-            />
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Genre"
-              value={newTrack.genre}
-              onChangeText={(text) => setNewTrack({ ...newTrack, genre: text })}
-            />
-            <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-              <Text style={styles.uploadButtonText}>Upload Image</Text>
-            </TouchableOpacity>
-            {newTrack.imageFile && (
-              <Text style={styles.uploadedFile}>
-                Image: {newTrack.imageFile.name}
-              </Text>
-            )}
-            <TouchableOpacity style={styles.uploadButton} onPress={pickAudio}>
-              <Text style={styles.uploadButtonText}>Upload Audio</Text>
-            </TouchableOpacity>
-            {newTrack.mp3File && (
-              <Text style={styles.uploadedFile}>
-                Audio: {newTrack.mp3File.name}
-              </Text>
-            )}
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={handleNewTrack}
-            >
-              {isUploading ? (
-                <ActivityIndicator size="small" color="#ffffff" />
-              ) : (
-                <Text style={styles.modalButtonText}>Create</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.modalButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <UploadModal
+        isModalVisible={isUploadModalVisible}
+        setModalVisible={setUploadModalVisible}
+        newTrack={newTrack}
+        setNewTrack={setNewTrack}
+        isUploading={isUploading}
+        handleNewTrack={handleNewTrack}
+        pickImage={pickImage}
+        pickAudio={pickAudio}
+      />
+      <MoreOptionsModal
+        isMoreOptionsModalVisible={isMoreOptionsModalVisible}
+        hideMoreOptionsModal={() => setMoreOptionsModalVisible(false)}
+        track={selectedTrack}
+        onDeleteSuccess={handleDeleteSuccess} // Đảm bảo bạn đã thêm onDeleteSuccess và truyền hàm xử lý vào đây
+      />
     </LinearGradient>
   );
 };
@@ -340,65 +307,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 20,
     marginLeft: 20,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '80%',
-    backgroundColor: '#1ED760',
-    padding: 20,
-    borderRadius: 10,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 10,
-  },
-  modalInput: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 20,
-  },
-  uploadButton: {
-    backgroundColor: '#ffffff',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  uploadedFile: {
-    color: 'white',
-    marginBottom: 10,
-  },
-  modalButton: {
-    backgroundColor: '#121212',
-    borderRadius: 5,
-    padding: 10,
-    width: '100%',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  modalButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  uploadButtonText: {
-    color: 'black',
-  },
-  deleteButton: {
-    backgroundColor: 'red',
-    borderRadius: 30,
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  deleteButtonText: {
-    color: 'white',
   },
 });
 
