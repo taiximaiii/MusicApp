@@ -14,6 +14,7 @@ import {
   validateName,
   validatePassword,
 } from "../utils/validation";
+import { logoUrl } from "../utils/image";
 
 
 const RegisterScreen = ({ navigation }) => {
@@ -83,7 +84,7 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/spo.png")} style={styles.logo} />
+      <Image source={{ uri: logoUrl }} style={styles.logo} />
       <TextInput
         style={styles.input}
         placeholder="Name"

@@ -10,8 +10,8 @@ import {
 } from "react-native";
 import { removeAccessToken } from "../service/token";
 import { UserProfile } from "../interface/UserProfile";
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import { profileApi } from "../service/user";
+import { avtUrl } from "../utils/image";
 
 const ProfileScreen = ({ navigation }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -44,7 +44,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const profileImageSource = user.imageUrl
     ? { uri: user.imageUrl }
-    : require("../assets/image1.png");
+    : { uri: avtUrl };
 
   return (
     <ScrollView style={styles.container}>

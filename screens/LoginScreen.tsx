@@ -16,6 +16,7 @@ import {
 } from "../service/token";
 import { loginApi } from "../service/user";
 import { validateEmail, validatePassword } from "../utils/validation";
+import { logoUrl } from "../utils/image";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -64,7 +65,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/spo.png")} style={styles.logo} />
+      <Image source={{ uri: logoUrl }} style={styles.logo} />
 
       <TextInput
         style={styles.input}

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { trackUrl } from "./api";
-import tr from "date-fns/esm/locale/tr/index.js";
 export const getAllTrackApi = async () => {
   try {
     const response = await axios.get(trackUrl.concat("/all"));

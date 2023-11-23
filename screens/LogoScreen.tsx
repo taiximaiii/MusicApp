@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
+import { logoUrl } from '../utils/image';
 
 const LogoScreen = ({ navigation }) => {
   useEffect(() => {
@@ -14,7 +15,7 @@ const LogoScreen = ({ navigation }) => {
     <View style={styles.container}>
       
         <Image
-          source={require('../assets/spo.png')}
+          source={{ uri: logoUrl }}
           style={styles.logo}
         />
       

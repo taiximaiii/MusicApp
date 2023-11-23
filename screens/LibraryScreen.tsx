@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, TextInput, Modal, Button } from 'react-native';
 import { getAllPlaylistApi, createNewPlaylistApi, deletePlaylistApi } from '../service/playlist';
 import { Playlist } from '../interface/Playlist';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { Swipeable } from 'react-native-gesture-handler';
+import { avtUrl } from '../utils/image';
 
 const LibraryScreen = ({navigation}) => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
   const [newPlaylist, setNewPlaylist] = useState<Playlist>({
@@ -44,7 +45,7 @@ const LibraryScreen = ({navigation}) => {
       )}
     >
       <TouchableOpacity style={styles.playlistItem} onPress={() => handlePlaylistPress(item)}>
-        <Image source={require('../assets/image1.png')} style={styles.playlistImage} />
+        <Image source={{ uri: avtUrl }} style={styles.playlistImage} />
         <Text style={styles.playlistTitle}>{item.name}</Text>
       </TouchableOpacity>
     </Swipeable>
@@ -84,16 +85,9 @@ const LibraryScreen = ({navigation}) => {
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Your Library</Text>
         <TouchableOpacity style={styles.newPlaylistButton} onPress={toggleModal}>
-          <Text style={styles.newPlaylistText}>+</Text>
+        <Entypo name="plus" size={24} color="white" />
         </TouchableOpacity>
       </View>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search"
-        placeholderTextColor="gray"
-        value={searchText}
-        onChangeText={setSearchText}
-      />
       <FlatList
         data={playlists}
         keyExtractor={(item) => item.id}
@@ -142,6 +136,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 20,
+    marginBottom:20,
+    marginTop:50,
   },
   header: {
     fontSize: 24,
