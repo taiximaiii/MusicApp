@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -10,7 +11,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient"; 
-import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Artist } from "../interface/Artist";
 import { getAllArtistApi } from "../service/artist";
@@ -30,7 +30,6 @@ const ListArtistScreen = ({ navigation }) => {
   }, []);
 
   const handleArtistPress = (artist: Artist) => {
-    // Xử lý khi người dùng chọn một nghệ sĩ
     navigation.navigate("ArtistDetail", { artist });
   };
 

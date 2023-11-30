@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -17,12 +18,14 @@ import { getAllArtistApi } from "../service/artist";
 import { getAllAlbumApi } from "../service/album";
 import { Artist } from "../interface/Artist";
 import { Album } from "../interface/Album";
+import { getAccessToken } from "../service/token";
 
 const HomeScreen = ({ navigation }) => {
 
   const [artists, setArtists] = useState([]);
   const [tracks, setTracks] = useState([]);
   const [albums,setAlbums] = useState([]);
+  
 
   const [greeting, setGreeting] = useState("");
 

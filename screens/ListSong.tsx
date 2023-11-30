@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
@@ -23,7 +24,10 @@ import MoreOptionsModal from '../components/MoreOptionsModal'; // Import modal f
 const ListSongScreen = ({navigation}) => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
   const [isUploadModalVisible, setUploadModalVisible] = useState(false);
+  const [isMoreOptionsModalVisible, setMoreOptionsModalVisible] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const [newTrack, setNewTrack] = useState({
     title: '',
     artist: '',
@@ -53,10 +57,6 @@ const ListSongScreen = ({navigation}) => {
     setIsSortingAscending(!isSortingAscending);
   };
 
-  const [isMoreOptionsModalVisible, setMoreOptionsModalVisible] =
-    useState(false);
-  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
-
   const fetchData = async () => {
     const data = await getAllTrackApi();
     const sortedData = [...data].sort((a, b) => a.title.localeCompare(b.title));
@@ -83,7 +83,6 @@ const ListSongScreen = ({navigation}) => {
       setNewTrack({...newTrack, imageFile: {uri, name, type}});
     } catch (error) {
       if (DocumentPicker.isCancel(error)) {
-        // User cancelled the picker
       } else {
         throw error;
       }
@@ -101,7 +100,6 @@ const ListSongScreen = ({navigation}) => {
       setNewTrack({...newTrack, mp3File: {uri, name, type}});
     } catch (error) {
       if (DocumentPicker.isCancel(error)) {
-        // User cancelled the picker
       } else {
         throw error;
       }
@@ -115,7 +113,7 @@ const ListSongScreen = ({navigation}) => {
       !newTrack.imageFile ||
       !newTrack.mp3File
     ) {
-      console.log('Please fill in all required information.');
+      setErrorMessage('Please fill in all required information.');
       return;
     }
 
@@ -159,8 +157,7 @@ const ListSongScreen = ({navigation}) => {
         </View>
         <TouchableOpacity
           style={styles.iconContainer}
-          onPress={() => openMoreOptions(item)} // Open more options modal
-        >
+          onPress={() => openMoreOptions(item)}>
           <Entypo name="dots-three-vertical" size={24} color="#C0C0C0" />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -216,12 +213,13 @@ const ListSongScreen = ({navigation}) => {
         handleNewTrack={handleNewTrack}
         pickImage={pickImage}
         pickAudio={pickAudio}
+        errorMessage={errorMessage}
       />
       <MoreOptionsModal
         isMoreOptionsModalVisible={isMoreOptionsModalVisible}
         hideMoreOptionsModal={() => setMoreOptionsModalVisible(false)}
         track={selectedTrack}
-        onDeleteSuccess={handleDeleteSuccess} // Đảm bảo bạn đã thêm onDeleteSuccess và truyền hàm xử lý vào đây
+        onDeleteSuccess={handleDeleteSuccess}
       />
     </LinearGradient>
   );

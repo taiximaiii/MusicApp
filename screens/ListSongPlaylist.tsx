@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -44,13 +45,10 @@ const ListSongPlaylist = ({ route, navigation }) => {
     navigation.navigate("PlayScreen", { track,tracks });
   };
 
-  // Function to open DeleteFromPlaylistModal
   const openDeleteModal = (track: Track) => {
     setTrackToDelete(track);
     setIsDeleteModalVisible(true);
   };
-
-  // Function to close DeleteFromPlaylistModal
   const closeDeleteModal = () => {
     setIsDeleteModalVisible(false);
     setTrackToDelete(null);

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, TextInput, Modal, Button } from 'react-native';
 import { getAllPlaylistApi, createNewPlaylistApi, deletePlaylistApi } from '../service/playlist';

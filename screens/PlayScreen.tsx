@@ -1,10 +1,10 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { Dimensions, FlatList, Image, StyleSheet, Text, View,TouchableOpacity,ScrollView } from 'react-native';
 import TrackPlayer, {
   Event,
   Track,
   useTrackPlayerEvents,
-  usePlaybackState,
   RepeatMode,
 } from 'react-native-track-player';
 import AntDesign from 'react-native-vector-icons/AntDesign';

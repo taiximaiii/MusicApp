@@ -27,22 +27,26 @@ export const getAccessToken = async () => {
   }
 };
 
-export const addTokenToAxios = (accessToken : string) => {
-  axios.interceptors.request.use(
-    function (config) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-      return config;
-    },
-    function (error) {
-      return Promise.reject(error);
-    }
-  );
+export const addTokenToAxios = (accessToken: string): Promise<void> => {
+  return new Promise<void>((resolve, reject) => {
+    axios.interceptors.request.use(
+      function (config) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+        return config;
+      },
+      function (error) {
+        reject(error);
+        return Promise.reject(error);
+      }
+    );
+    resolve();
+  });
 };
 
 export const removeAccessToken = async () => {
   try {
     await AsyncStorage.removeItem('accessToken');
-    axios.defaults.headers.common['Authorization'] = undefined;
+    axios.defaults.headers.common["Authorization"] = null;
   } catch (error) {
     console.log('Lỗi khi xoá token', error);
     return false;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -10,7 +11,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { getTracksbyArtistIdApi } from "../service/artist";

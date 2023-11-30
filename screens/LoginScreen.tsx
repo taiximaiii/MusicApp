@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -27,7 +28,7 @@ const LoginScreen = ({ navigation }) => {
     try {
       const accessToken = await getAccessToken();
       if (accessToken) {
-        addTokenToAxios(accessToken);
+        await addTokenToAxios(accessToken);
         navigation.navigate("Main");
       }
     } catch (error) {
@@ -56,7 +57,8 @@ const LoginScreen = ({ navigation }) => {
 
     const response = await loginApi({ email, password });
     const { data } = response.data;
-    const result = setAccessToken(response.data.token);
+    await addTokenToAxios(response.data.token)
+    const result = await setAccessToken(response.data.token);
     if (result) {
       // Alert.alert("Login Success", "You have successfully logged in.");
       navigation.navigate("Main");
@@ -87,11 +89,6 @@ const LoginScreen = ({ navigation }) => {
       {passwordError ? (
         <Text style={styles.errorText}>{passwordError}</Text>
       ) : null}
-
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={styles.forgotPassword}>Forgot Password?</Text>
-      </TouchableOpacity>
-
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>

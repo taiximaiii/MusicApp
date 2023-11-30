@@ -1,4 +1,4 @@
-// UploadModal.jsx
+
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -9,10 +9,6 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
-import LinearGradient from 'react-native-linear-gradient';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
 
 const UploadModal = ({
   isModalVisible,
@@ -23,6 +19,7 @@ const UploadModal = ({
   handleNewTrack,
   pickImage,
   pickAudio,
+  errorMessage,
 }) => {
   return (
     <Modal
@@ -34,6 +31,9 @@ const UploadModal = ({
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Upload New Track</Text>
+          {errorMessage !== '' && (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          )}
           <TextInput
             style={styles.modalInput}
             placeholder="Title"
@@ -136,6 +136,10 @@ const styles = StyleSheet.create({
   },
   uploadButtonText: {
     color: 'black',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 

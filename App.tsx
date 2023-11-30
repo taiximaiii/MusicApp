@@ -5,7 +5,6 @@ import BottomTabNavigator from "./navigation/BottomTabNavigator";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import LogoScreen from "./screens/LogoScreen";
-import ForgotPasswordScreen from "./screens/FogotPassword";
 import PlayScreen from "./screens/PlayScreen";
 import SongItem from "./screens/ListSong";
 import ArtistDetailScreen from "./screens/ArtistDetailScreen";
@@ -23,7 +22,6 @@ const App = () => {
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LogoScreen" component={LogoScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ListSong" component={SongItem} options={{ headerShown: false }} />
         <Stack.Screen name="ListArtist" component={ListArtistScreen} options={{ headerShown: false }} />
         <Stack.Screen name="PlayScreen" component={PlayScreen} options={{ headerShown: false }} />
