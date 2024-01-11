@@ -72,27 +72,7 @@ function PlayScreen({ route,navigation }) {
       </View>
     );
   }
-  const addComment = async () => {
-    if (!commentText) {
-      return;
-    }
-    await addCommentApi(commentText, track.id);
-    setCommentText("");
-    fetchData();
-  };
-  const formatTimestamp = (timestamp: string) => {
-    try {
-      const commentDate = new Date(timestamp);
-      const distance = formatDistanceToNow(commentDate, {
-        addSuffix: true,
-        includeSeconds: true,
-        locale: vi,
-      });
-      return distance;
-    } catch (error) {
-      return "Invalid Timestamp";
-    }
-  };
+ 
 
   const renderArtWork = () => {
     return (
@@ -123,32 +103,7 @@ function PlayScreen({ route,navigation }) {
       <SongSlider />
       <ControlCenter />
       </View>
-      <View style={styles.commentsContainer}>
-          <Text style={styles.commentsTitle}>Comments</Text>
-          <FlatList
-            data={comments}
-            renderItem={({ item }) => (
-              <View style={styles.comment}>
-                <Text style={styles.commentUsername}>{item.user.name}</Text>
-                <Text style={styles.commentText}>{item.content}</Text>
-                <Text style={styles.commentTimestamp}>
-                  {formatTimestamp(item.timestamp)}
-                </Text>
-              </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-          <TextInput
-            style={styles.commentInput}
-            placeholder="Add a comment..."
-            placeholderTextColor="#888"
-            value={commentText}
-            onChangeText={(text) => setCommentText(text)}
-          />
-          <TouchableOpacity style={styles.commentButton} onPress={addComment}>
-            <Text style={styles.commentButtonText}>Add Comment</Text>
-          </TouchableOpacity>
-        </View>
+
     </ScrollView>
   );
 }

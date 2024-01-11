@@ -11,18 +11,23 @@ import {
 } from "react-native";
 import { removeAccessToken } from "../service/token";
 import { UserProfile } from "../interface/UserProfile";
-import { profileApi } from "../service/user";
+import { profileApi, updateAvatarApi } from '../service/user';
 import { avtUrl } from "../utils/image";
-
+import DocumentPicker from 'react-native-document-picker';
+import UploadAvatarModal from "../components/UploadAvatarModal";
 const ProfileScreen = ({ navigation }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
-
+  const [imgFile,setImgFile] = useState( 
+  {uri: '',
+  name: '',
+  type: ''})
+  const [isUploading, setIsUploading] = useState(false);
+  const [isUploadModalVisible, setUploadModalVisible] = useState(false);
+  const fetchData = async () => {
+    const data = await profileApi();
+    setUser(data);
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await profileApi();
-
-      setUser(data);
-    };
     fetchData();
   }, []);
 
@@ -31,7 +36,40 @@ const ProfileScreen = ({ navigation }) => {
     // Alert.alert("Logout Success", "You have successfully logged out.");
     navigation.navigate("Login");
   };
-
+  const handleUploadAvatar = async () => {
+    setIsUploading(true);
+    try {
+      console.log(imgFile);
+      
+      await updateAvatarApi(imgFile);
+      setUploadModalVisible(false);
+      setImgFile({uri: '', name: '', type: ''})
+      fetchData();
+    } catch (error) {
+      console.error('Error upload avatar:', error);
+    } finally {
+      setIsUploading(false);
+    }
+ };
+ const pickImage = async () => {
+  try {
+    const result = await DocumentPicker.pick({
+      type: [DocumentPicker.types.images],
+    });
+    const uri = result[0].uri;
+    const name = result[0].name;
+    const type = result[0].type;
+    setImgFile({uri, name, type});
+    setUploadModalVisible(true)
+    
+  } catch (error) {
+    if (DocumentPicker.isCancel(error)) {
+    } else {
+      throw error;
+    }
+  }
+};
+ 
   if (!user) {
     return (
       <View style={styles.loadingContainer}>
@@ -42,7 +80,7 @@ const ProfileScreen = ({ navigation }) => {
       </View>
     );
   }
-
+  
   const profileImageSource = user.imageUrl
     ? { uri: user.imageUrl }
     : { uri: avtUrl };
@@ -52,6 +90,9 @@ const ProfileScreen = ({ navigation }) => {
       
       <View style={styles.header}>
         <Image source={profileImageSource} style={styles.profileImage} />
+      <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
+        <Text style={styles.uploadText}>UPLOAD AVATAR</Text>
+      </TouchableOpacity>
         <Text style={styles.username}>{user.name}</Text>
       </View>
       <View style={styles.userInfo}>
@@ -67,6 +108,15 @@ const ProfileScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>LOG OUT</Text>
       </TouchableOpacity>
+      <UploadAvatarModal
+        isModalVisible={isUploadModalVisible}
+        setModalVisible={setUploadModalVisible}
+        isUploading={isUploading}
+        imgFile={imgFile}
+        handleUploadAvatar = {handleUploadAvatar}
+      />
+
+      
     </ScrollView>
   );
 };
@@ -137,6 +187,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "white",
   },
+  uploadButton: {
+
+  },
+  uploadText : {
+    marginTop: 10,
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "white",
+  }
   
 });
 

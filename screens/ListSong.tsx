@@ -211,8 +211,9 @@ const ListSongScreen = ({navigation}) => {
         setNewTrack={setNewTrack}
         isUploading={isUploading}
         handleNewTrack={handleNewTrack}
-        pickImage={pickImage}
+        isUploading={isUploading}
         pickAudio={pickAudio}
+        pickImage={pickImage}
         errorMessage={errorMessage}
       />
       <MoreOptionsModal

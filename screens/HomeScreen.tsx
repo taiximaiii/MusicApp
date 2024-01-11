@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import { ScrollView } from "react-native";
 import { getAllTrackApi } from "../service/track";
 import { Track } from "../interface/Track";
@@ -18,7 +17,6 @@ import { getAllArtistApi } from "../service/artist";
 import { getAllAlbumApi } from "../service/album";
 import { Artist } from "../interface/Artist";
 import { Album } from "../interface/Album";
-import { getAccessToken } from "../service/token";
 
 const HomeScreen = ({ navigation }) => {
 

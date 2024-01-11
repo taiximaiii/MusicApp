@@ -35,4 +35,22 @@ export const profileApi = async () => {
   } catch (error) {
     console.error("Error fetching data:", error);
   }
+
+  
+};
+export const updateAvatarApi = async (imgFile : any) => {
+  try {
+    const formData = new FormData();
+    formData.append("imgFile", imgFile);
+    console.log(imgFile);
+    const response = await axios.post(userUrl.concat("/updateAvatar"), formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error uploading avatar:", error);
+    throw error;
+  }
 };
